@@ -1,0 +1,20 @@
+- step:
+    name: preprocess
+    image: basheppo/custom-image:latest
+    command:
+    - python ./preprocess.py
+    inputs:
+    - name: dataset
+      optional: false
+      default: datum://019995c1-4647-6c72-301d-f64b8376cc92
+      
+
+- step:
+    name: train
+    image: basheppo/custom-valohai-image:latest 
+    command:
+      - python ./train.py
+    inputs:
+    - name: train_dataset
+      optional: false
+      default: datum://019995da-7ee0-e4db-47e5-f402afe1bb16
