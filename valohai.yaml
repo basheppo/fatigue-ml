@@ -1,20 +1,71 @@
+
+
+
 - step:
     name: preprocess
     image: basheppo/custom-image:latest
     command:
-    - python ./preprocess.py
+      - python ./preprocess.py
     inputs:
-    - name: dataset
-      optional: false
-      default: datum://019995c1-4647-6c72-301d-f64b8376cc92
-      
+      - name: dataset
+        optional: false
+        default: datum://019995c1-4647-6c72-301d-f64b8376cc92
+    outputs:
+      - name: train_dataset
+      - name: test_dataset
 
 - step:
     name: train
-    image: basheppo/custom-valohai-image:latest 
+    image: basheppo/custom-valohai-image:latest
     command:
       - python ./train.py
     inputs:
-    - name: train_dataset
-      optional: false
-      default: datum://019995da-7ee0-e4db-47e5-f402afe1bb16
+      - name: train_dataset
+        optional: false
+    outputs:
+      - name: model
+      - name: metrics_train
+
+- step:
+    name: evaluate
+    image: basheppo/custom-valohai-image:latest
+    command:
+      - python ./evaluate.py
+    inputs:
+      - name: test_dataset
+        optional: false
+      - name: model
+        optional: false
+    outputs:
+      - name: metrics_test
+
+
+
+- pipeline:
+    name: preprocess-train-evaluate
+    nodes:
+      - name: preprocess
+        type: execution
+        step: preprocess
+
+      - name: train
+        type: execution
+        step: train
+        override:
+          inputs:
+            - name: train_dataset
+
+      - name: evaluate
+        type: execution
+        step: evaluate
+        override:
+          inputs:
+            - name: test_dataset
+            - name: model
+
+    edges:
+      - [preprocess.output.train_dataset, train.input.train_dataset]
+      - [preprocess.output.test_dataset, evaluate.input.test_dataset]
+      - [train.output.model, evaluate.input.model]
+
+

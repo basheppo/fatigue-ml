@@ -2,17 +2,11 @@ import pandas as pd
 import valohai
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, mean_absolute_error
+import os
+import json
+import joblib
+from funcs import get_scores
 
-def get_scores(model, X, y):
-
-    y_pred = model.predict(X)
-    r_sq = r2_score(y, y_pred)
-    mae = mean_absolute_error(y, y_pred)
-    print(type(model).__name__)
-    print("R2-score: {:.3f}".format(r_sq))
-    print("MAE: {:.2f}".format(mae))
-    
-    return r_sq,mae,y_pred
     
 
 lr_model= LinearRegression()
@@ -24,3 +18,16 @@ print(X_train)
 lr_model.fit(X_train, y_train)
 r2_s_train , mae_train , y_pred = get_scores(lr_model,X_train,y_train)
 print(r2_s_train)
+metrics = {
+    "r2_score": r2_s_train,
+    "mae": mae_train
+}
+output_dir = os.getenv('VH_OUTPUTS_DIR', '.')
+output_path = os.path.join(output_dir, 'metrics_train.json')
+with open(output_path, 'w') as f:
+    json.dump(metrics, f)
+
+print(f"Metrics saved to {output_path}")
+
+model_path = os.path.join(output_dir, 'model')
+joblib.dump(lr_model, model_path)

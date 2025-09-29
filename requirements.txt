@@ -1,4 +1,7 @@
-numpy 
-pandas 
-matplotlib 
+seaborn
+numpy
+pandas
+matplotlib
 valohai-utils
+statsmodels 
+scikit-learn==0.24.2
