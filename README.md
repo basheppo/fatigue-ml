@@ -1,6 +1,6 @@
 ## Project Overview
 
-I made this mini project to learn how to use of **Valohai** for building a machine learning pipeline to predict the fatigue strength of steel based on its composition and processing parameters. 
+I made this mini project to learn how to use **Valohai** for building a machine learning pipeline to predict the fatigue strength of steel based on its composition and processing parameters. 
 
 ---
 
